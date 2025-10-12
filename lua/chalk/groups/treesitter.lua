@@ -18,7 +18,7 @@ function M.setup(colors, opts)
 		["@attribute.builtin"] = { fg = c.orange },
 
 		-- Booleans
-		["@boolean"] = { fg = c.orange },
+		["@boolean"] = { fg = c.mahogany }, -- Distinctive boolean color
 
 		-- Characters
 		["@character"] = { fg = c.green },
@@ -40,34 +40,35 @@ function M.setup(colors, opts)
 			bold = true,
 		},
 
-		-- Constants
-		["@constant"] = { fg = c.yellow },
-		["@constant.builtin"] = { fg = c.yellow, bold = true },
-		["@constant.macro"] = { fg = c.purple },
+		-- Constants - Enhanced Golden Family for Rust
+		["@constant"] = { fg = c.bronze }, -- Constants - warm bronze
+		["@constant.builtin"] = { fg = c.amber, bold = true }, -- true, false, None
+		["@constant.macro"] = { fg = c.copper }, -- Macro-defined constants
 
-		-- Functions
-		["@function"] = { fg = c.blue },
-		["@function.builtin"] = { fg = c.cyan },
-		["@function.call"] = { fg = c.blue },
-		["@function.macro"] = { fg = c.purple },
-		["@function.method"] = { fg = c.blue },
-		["@function.method.call"] = { fg = c.blue },
+		-- Functions - Refined Blue Family for Better Rust Support
+		["@function"] = { fg = c.soft_blue }, -- Function definitions - soft blue
+		["@function.builtin"] = { fg = c.primary }, -- Builtin functions - prominent
+		["@function.call"] = { fg = c.slate_blue }, -- Function calls - muted blue
+		["@function.macro"] = { fg = c.purple }, -- Macros - distinctive purple
+		["@function.method"] = { fg = c.soft_blue }, -- Methods match functions
+		["@function.method.call"] = { fg = c.slate_blue }, -- Method calls muted
 
-		-- Keywords
-		["@keyword"] = { fg = c.purple },
-		["@keyword.conditional"] = { fg = c.purple },
-		["@keyword.conditional.ternary"] = { fg = c.purple },
-		["@keyword.coroutine"] = { fg = c.purple, italic = true },
+		-- Keywords - Refined Purple Family with Better Rust Support
+		["@keyword"] = { fg = c.mauve }, -- General keywords (let, mut, if, etc.)
+		["@keyword.conditional"] = { fg = c.plum }, -- if, else, match
+		["@keyword.conditional.ternary"] = { fg = c.plum },
+		["@keyword.coroutine"] = { fg = c.violet, italic = true },
 		["@keyword.debug"] = { fg = c.error },
-		["@keyword.directive"] = { fg = c.purple },
-		["@keyword.directive.define"] = { fg = c.purple },
-		["@keyword.exception"] = { fg = c.purple },
-		["@keyword.function"] = { fg = c.purple },
-		["@keyword.import"] = { fg = c.purple },
-		["@keyword.operator"] = { fg = c.purple },
-		["@keyword.repeat"] = { fg = c.purple },
-		["@keyword.return"] = { fg = c.purple },
-		["@keyword.storage"] = { fg = c.purple },
+		["@keyword.directive"] = { fg = c.indigo }, -- #[derive], etc.
+		["@keyword.directive.define"] = { fg = c.indigo },
+		["@keyword.exception"] = { fg = c.burgundy },
+		["@keyword.function"] = { fg = c.violet }, -- fn keyword - more prominent
+		["@keyword.import"] = { fg = c.navy }, -- use statements - distinct blue
+		["@keyword.operator"] = { fg = c.slate_blue },
+		["@keyword.repeat"] = { fg = c.plum }, -- for, while, loop
+		["@keyword.return"] = { fg = c.crimson }, -- return - prominent red
+		["@keyword.storage"] = { fg = c.burgundy }, -- mut, const, static
+		["@keyword.type"] = { fg = c.indigo }, -- struct, enum, impl, trait
 
 		-- Labels
 		["@label"] = { fg = c.cyan },
@@ -101,38 +102,41 @@ function M.setup(colors, opts)
 		-- Math
 		["@math"] = { fg = c.cyan },
 
-		-- Modules
-		["@module"] = { fg = c.purple },
-		["@module.builtin"] = { fg = c.purple, bold = true },
+		-- Modules - Enhanced for Rust Module System
+		["@module"] = { fg = c.slate_blue }, -- Module references (std::io)
+		["@module.builtin"] = { fg = c.teal_gray, bold = true }, -- Built-in modules
+		
+		-- Namespace support
+		["@namespace"] = { fg = c.slate_blue }, -- Namespace references
 
-		-- Numbers
-		["@number"] = { fg = c.orange },
-		["@number.float"] = { fg = c.orange },
+		-- Numbers - Enhanced Orange Family
+		["@number"] = { fg = c.orange }, -- Integer numbers - clear orange
+		["@number.float"] = { fg = c.burnt_orange }, -- Float numbers - muted
 
 		-- Operators
-		["@operator"] = { fg = c.purple },
+		["@operator"] = { fg = c.pewter }, -- Neutral operator color
 
-		-- Parameters
-		["@parameter"] = { fg = c.red },
-		["@parameter.builtin"] = { fg = c.red, italic = true },
-		["@parameter.reference"] = { fg = c.red },
+		-- Parameters - Enhanced for Function Signatures
+		["@parameter"] = { fg = c.terracotta }, -- Function parameters
+		["@parameter.builtin"] = { fg = c.rust, italic = true }, -- Built-in parameters
+		["@parameter.reference"] = { fg = c.indian_red }, -- Parameter references
 
-		-- Properties
-		["@property"] = { fg = c.red },
+		-- Properties - Enhanced for Rust Fields
+		["@property"] = { fg = c.dusty_rose }, -- Struct fields, object properties
 
-		-- Punctuation
-		["@punctuation.bracket"] = { fg = c.light_gray },
-		["@punctuation.delimiter"] = { fg = c.light_gray },
-		["@punctuation.special"] = { fg = c.cyan },
+		-- Punctuation - Subtle Gray Family
+		["@punctuation.bracket"] = { fg = c.steel }, -- Structural elements
+		["@punctuation.delimiter"] = { fg = c.stone }, -- Delimiters slightly different
+		["@punctuation.special"] = { fg = c.slate }, -- Special punctuation
 
-		-- Strings
-		["@string"] = { fg = c.green },
+		-- Strings - Natural Green Family
+		["@string"] = { fg = c.sage_green }, -- Main string color
 		["@string.documentation"] = { fg = c.comment, italic = true },
-		["@string.escape"] = { fg = c.cyan },
-		["@string.regex"] = { fg = c.green },
-		["@string.special"] = { fg = c.cyan },
-		["@string.special.path"] = { fg = c.green, underline = true },
-		["@string.special.symbol"] = { fg = c.yellow },
+		["@string.escape"] = { fg = c.moss }, -- Escape sequences
+		["@string.regex"] = { fg = c.forest }, -- Regex patterns
+		["@string.special"] = { fg = c.emerald }, -- Special strings
+		["@string.special.path"] = { fg = c.pine, underline = true }, -- File paths
+		["@string.special.symbol"] = { fg = c.olive }, -- Symbols
 		["@string.special.url"] = { fg = c.info, underline = true },
 
 		-- Tags (HTML/XML)
@@ -140,28 +144,28 @@ function M.setup(colors, opts)
 		["@tag.attribute"] = { fg = c.orange },
 		["@tag.delimiter"] = { fg = c.light_gray },
 
-		-- Types
-		["@type"] = { fg = c.yellow },
-		["@type.builtin"] = { fg = c.yellow, bold = true },
-		["@type.definition"] = { fg = c.yellow },
-		["@type.qualifier"] = { fg = c.purple },
+		-- Types - Enhanced Golden Family for Better Rust Support
+		["@type"] = { fg = c.honey }, -- Struct names, user-defined types
+		["@type.builtin"] = { fg = c.amber, bold = true }, -- Primitive types (i32, String, etc.)
+		["@type.definition"] = { fg = c.honey, bold = true }, -- Type definitions
+		["@type.qualifier"] = { fg = c.bronze }, -- Type qualifiers (&, mut, etc.)
 
-		-- Variables
-		["@variable"] = { fg = c.red },
-		["@variable.builtin"] = { fg = c.red, italic = true },
-		["@variable.member"] = { fg = c.red },
-		["@variable.parameter"] = { fg = c.red },
+		-- Variables - Refined Earth Tones for Better Rust Support
+		["@variable"] = { fg = c.fg }, -- Regular variables - clean foreground
+		["@variable.builtin"] = { fg = c.rust, italic = true }, -- self, super, crate
+		["@variable.member"] = { fg = c.dusty_rose }, -- Struct fields - soft rose
+		["@variable.parameter"] = { fg = c.terracotta }, -- Function parameters - earthy
 
 		-- Language-specific overrides
 		-- Lua
-		["@constructor"] = { fg = c.yellow },
-		["@constructor.lua"] = { fg = c.light_gray },
-		["@function.call.lua"] = { fg = c.blue },
-		["@keyword.function.lua"] = { fg = c.purple },
-		["@keyword.operator.lua"] = { fg = c.purple },
-		["@punctuation.bracket.lua"] = { fg = c.light_gray },
-		["@punctuation.delimiter.lua"] = { fg = c.light_gray },
-		["@variable.builtin.lua"] = { fg = c.purple },
+		["@constructor"] = { fg = c.amber },
+		["@constructor.lua"] = { fg = c.steel },
+		["@function.call.lua"] = { fg = c.slate_blue },
+		["@keyword.function.lua"] = { fg = c.violet },
+		["@keyword.operator.lua"] = { fg = c.slate_blue },
+		["@punctuation.bracket.lua"] = { fg = c.steel },
+		["@punctuation.delimiter.lua"] = { fg = c.stone },
+		["@variable.builtin.lua"] = { fg = c.rust },
 
 		-- Python
 		["@attribute.python"] = { fg = c.orange },
@@ -244,14 +248,14 @@ function M.setup(colors, opts)
 		["@markup.quote.markdown"] = { fg = c.comment, italic = true },
 
 		-- C/C++
-		["@constant.macro.c"] = { fg = c.purple },
-		["@constant.macro.cpp"] = { fg = c.purple },
-		["@function.builtin.c"] = { fg = c.cyan },
-		["@function.builtin.cpp"] = { fg = c.cyan },
-		["@keyword.directive.c"] = { fg = c.purple },
-		["@keyword.directive.cpp"] = { fg = c.purple },
-		["@type.builtin.c"] = { fg = c.yellow },
-		["@type.builtin.cpp"] = { fg = c.yellow },
+		["@constant.macro.c"] = { fg = c.copper },
+		["@constant.macro.cpp"] = { fg = c.copper },
+		["@function.builtin.c"] = { fg = c.teal_gray },
+		["@function.builtin.cpp"] = { fg = c.teal_gray },
+		["@keyword.directive.c"] = { fg = c.indigo },
+		["@keyword.directive.cpp"] = { fg = c.indigo },
+		["@type.builtin.c"] = { fg = c.honey },
+		["@type.builtin.cpp"] = { fg = c.honey },
 
 		-- Go
 		["@function.builtin.go"] = { fg = c.cyan },
@@ -260,13 +264,19 @@ function M.setup(colors, opts)
 		["@type.builtin.go"] = { fg = c.yellow },
 		["@variable.builtin.go"] = { fg = c.purple },
 
-		-- Rust
-		["@attribute.rust"] = { fg = c.orange },
-		["@function.builtin.rust"] = { fg = c.cyan },
-		["@function.macro.rust"] = { fg = c.purple },
-		["@keyword.storage.rust"] = { fg = c.purple },
-		["@type.builtin.rust"] = { fg = c.yellow },
-		["@variable.builtin.rust"] = { fg = c.purple },
+		-- Rust - Enhanced for Better TreeSitter Support
+		["@attribute.rust"] = { fg = c.orange }, -- #[derive], #[cfg], etc.
+		["@function.builtin.rust"] = { fg = c.primary }, -- println!, vec!, etc.
+		["@function.macro.rust"] = { fg = c.purple }, -- Macro definitions
+		["@keyword.storage.rust"] = { fg = c.burgundy }, -- mut, const, static
+		["@keyword.function.rust"] = { fg = c.violet }, -- fn keyword
+		["@keyword.import.rust"] = { fg = c.navy }, -- use statements
+		["@keyword.type.rust"] = { fg = c.indigo }, -- struct, enum, impl, trait
+		["@type.builtin.rust"] = { fg = c.amber }, -- i32, String, Vec, etc.
+		["@variable.builtin.rust"] = { fg = c.rust }, -- self, super, crate
+		["@variable.member.rust"] = { fg = c.dusty_rose }, -- Struct field access
+		["@module.rust"] = { fg = c.slate_blue }, -- Module references (std::io)
+		["@namespace.rust"] = { fg = c.slate_blue }, -- Namespace references
 
 		-- Java
 		["@constant.java"] = { fg = c.yellow },

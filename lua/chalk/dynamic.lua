@@ -369,6 +369,11 @@ end
 function M.dump_treesitter_structure(bufnr)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	
+	-- Validate buffer number
+	if not bufnr or bufnr == 0 or not vim.api.nvim_buf_is_valid(bufnr) then
+		bufnr = vim.api.nvim_get_current_buf()
+	end
+	
 	-- Get buffer info for diagnostics
 	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
 	local bufname = vim.api.nvim_buf_get_name(bufnr)
@@ -610,7 +615,9 @@ function M.setup_commands()
 		desc = "Inspect TreeSitter group under cursor"
 	})
 	
-	vim.api.nvim_create_user_command("DumpTreesitterStructure", M.dump_treesitter_structure, {
+	vim.api.nvim_create_user_command("DumpTreesitterStructure", function()
+		M.dump_treesitter_structure()
+	end, {
 		desc = "Dump TreeSitter structure of current buffer to new buffer"
 	})
 end

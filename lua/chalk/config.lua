@@ -38,6 +38,16 @@ M.defaults = {
 	-- Caching for performance
 	cache = true,
 
+	-- Color generator options
+	enable_generator = false, -- Enable TreeSitter color generator
+	generator_keymaps = false, -- Setup generator keymaps
+	generator_config = {
+		harmony_model = "split_complementary", -- "triadic", "analogous"
+		min_contrast = 4.5, -- WCAG contrast ratio
+		auto_apply = true, -- Automatically apply generated colors
+		language_hints = true, -- Use language-specific optimizations
+	},
+
 	-- Plugin integrations with auto-detection
 	plugins = {
 		-- Enable all plugins by default when detected

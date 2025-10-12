@@ -44,6 +44,17 @@ end
 ---@param opts? chalk.Config Configuration options
 function M.setup(opts)
 	Config.setup(opts)
+	
+	-- Always setup generator commands (they're harmless when not used)
+	local generator = require("chalk.generator")
+	generator.setup_commands()
+	
+	-- Setup generator features if enabled
+	if opts and opts.enable_generator then
+		if opts.generator_keymaps then
+			generator.setup_keymaps()
+		end
+	end
 end
 
 ---Get current colors for the active or specified variant
@@ -70,6 +81,20 @@ end
 ---@return table Theme metadata
 function M.info()
 	return require("chalk.theme").info()
+end
+
+---Access to color generator functions
+---@return table Generator module
+function M.generator()
+	return require("chalk.generator")
+end
+
+---Quick generator setup with commands enabled
+function M.enable_generator()
+	local generator = require("chalk.generator")
+	generator.setup_commands()
+	generator.setup_keymaps()
+	vim.notify("Chalk color generator enabled!", vim.log.levels.INFO)
 end
 
 return M
