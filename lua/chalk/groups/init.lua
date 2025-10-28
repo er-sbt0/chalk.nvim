@@ -61,14 +61,7 @@ function M.get(name, colors, opts)
 
 	-- Ensure mod is a table or function
 	if type(mod) ~= "table" and type(mod) ~= "function" then
-		vim.notify(
-			string.format(
-				"chalk.nvim: Invalid module type for '%s': expected table or function, got %s",
-				name,
-				type(mod)
-			),
-			vim.log.levels.ERROR
-		)
+		Util.error(string.format("Invalid module type for '%s': expected table or function, got %s", name, type(mod)))
 		return nil
 	end
 

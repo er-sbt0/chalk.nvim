@@ -1,17 +1,20 @@
--- Chalk utilities module
--- Simplified and consolidated utility system for chalk.nvim
+-- Chalk dynamic color system module
+-- Provides real-time color adjustments and utilities
+--
+-- API PATTERN: All functions return modules (no state caching)
+-- This ensures fresh module state and avoids stale references
 
 local M = {}
 
--- Direct module access (no lazy loading needed for simplified structure)
-
 ---Access to enhanced color utilities
+---Pure utility functions for color manipulation (no state)
 ---@return table Colors module with advanced color manipulation
 function M.colors()
 	return require("chalk.dynamic.colors")
 end
 
 ---Access to dynamic color adjustment system
+---Manages real-time color changes with persistent storage
 ---@return table Dynamic module for real-time color changes
 function M.dynamic()
 	return require("chalk.dynamic.dynamic")

@@ -179,13 +179,17 @@ function M.setup(opts)
 	opts = opts or {}
 
 	-- Handle legacy configuration format
+	-- DEPRECATION TIMELINE:
+	-- - 'integrations' deprecated in v1.0.0 (October 2025)
+	-- - 'custom_highlights' deprecated in v1.0.0 (October 2025)
+	-- - Removal planned for v2.0.0 (target: April 2026)
 	if opts.integrations and not opts.plugins then
-		vim.notify("chalk.nvim: 'integrations' is deprecated, use 'plugins' instead", vim.log.levels.WARN)
+		Util.warn("'integrations' is deprecated since v1.0.0, use 'plugins' instead. Will be removed in v2.0.0")
 		opts.plugins = opts.integrations
 	end
 
 	if opts.custom_highlights and not opts.on_highlights then
-		vim.notify("chalk.nvim: 'custom_highlights' is deprecated, use 'on_highlights' instead", vim.log.levels.WARN)
+		Util.warn("'custom_highlights' is deprecated since v1.0.0, use 'on_highlights' instead. Will be removed in v2.0.0")
 		opts.on_highlights = function(hl, colors)
 			if type(opts.custom_highlights) == "function" then
 				local custom = opts.custom_highlights(colors)

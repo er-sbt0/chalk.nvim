@@ -4,6 +4,30 @@ local M = {}
 M.bg = "#1e1e2e" -- Default chalk background (main)
 M.fg = "#c9c7cd" -- Default chalk foreground
 
+---Standardized notification helper
+---@param message string Notification message
+---@param level? number Notification level (default: INFO)
+---@param prefix? string Message prefix (default: "chalk.nvim")
+function M.notify(message, level, prefix)
+	level = level or vim.log.levels.INFO
+	prefix = prefix or "chalk.nvim"
+	vim.notify(string.format("%s: %s", prefix, message), level)
+end
+
+---Standardized error helper
+---@param message string Error message
+---@param prefix? string Message prefix (default: "chalk.nvim")
+function M.error(message, prefix)
+	M.notify(message, vim.log.levels.ERROR, prefix)
+end
+
+---Standardized warning helper
+---@param message string Warning message
+---@param prefix? string Message prefix (default: "chalk.nvim")
+function M.warn(message, prefix)
+	M.notify(message, vim.log.levels.WARN, prefix)
+end
+
 ---Convert hex color to RGB values
 ---@param hex string Hex color string (e.g., "#ff0000")
 ---@return number, number, number RGB values (0-255)
@@ -88,7 +112,8 @@ function M.mod(modname, silent)
 	local ok, result = pcall(require, modname)
 	if not ok then
 		if not silent then
-			vim.notify("chalk.nvim: Failed to load module '" .. modname .. "'", vim.log.levels.ERROR)
+			M.error("Failed to load module '" .. modname .. "'")
+		end
 		end
 		return nil
 	end
