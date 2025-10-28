@@ -93,29 +93,10 @@ end
 ---@param capture string TreeSitter capture (e.g., "@keyword")
 ---@return string|nil Highlight group name
 local function get_highlight_group_for_capture(capture)
-	-- Common TreeSitter capture to highlight group mappings
-	local mappings = {
-		["@keyword"] = "Keyword",
-		["@function"] = "Function",
-		["@variable"] = "Identifier",
-		["@string"] = "String",
-		["@comment"] = "Comment",
-		["@number"] = "Number",
-		["@boolean"] = "Boolean",
-		["@type"] = "Type",
-		["@constant"] = "Constant",
-		["@operator"] = "Operator",
-		["@punctuation"] = "Delimiter",
-		["@tag"] = "Tag",
-		["@attribute"] = "PreProc",
-		["@namespace"] = "Include",
-		["@field"] = "Identifier",
-		["@property"] = "Identifier",
-		["@parameter"] = "Identifier",
-		["@label"] = "Label",
-	}
-
-	return mappings[capture] or capture:gsub("^@", ""):gsub("^%l", string.upper)
+	-- In Neovim 0.10+, TreeSitter highlight groups use the @ prefix directly
+	-- We should use the capture name as-is, which is the actual highlight group
+	-- The capture is already the highlight group name (e.g., "@type.builtin")
+	return capture
 end
 
 -- Override management
@@ -194,13 +175,28 @@ function M.apply_overrides()
 	local overrides = M.load_overrides()
 
 	for group_name, color in pairs(overrides) do
+		-- Convert hex color to number (remove # and convert to number)
+		local color_num = tonumber(color:gsub("#", ""), 16)
+		
 		local current_hl = vim.api.nvim_get_hl(0, { name = group_name })
+		
+		-- If the group is a link, we need to break the link and copy the linked attributes
+		if current_hl.link then
+			-- Get the linked group's attributes
+			local linked_hl = vim.api.nvim_get_hl(0, { name = current_hl.link, link = false })
+			-- Copy all attributes from the linked group
+			current_hl = vim.tbl_extend("force", linked_hl, {})
+			-- Remove the link
+			current_hl.link = nil
+		end
+		
 		if current_hl then
 			-- Preserve other attributes, just change the foreground color
-			vim.api.nvim_set_hl(0, group_name, vim.tbl_extend("force", current_hl, { fg = color }))
+			current_hl.fg = color_num
+			vim.api.nvim_set_hl(0, group_name, current_hl)
 		else
 			-- Create new highlight group if it doesn't exist
-			vim.api.nvim_set_hl(0, group_name, { fg = color })
+			vim.api.nvim_set_hl(0, group_name, { fg = color_num })
 		end
 	end
 end
@@ -225,8 +221,22 @@ local function apply_color_change(group_name, new_color)
 	-- Get current highlight group
 	local current_hl = vim.api.nvim_get_hl(0, { name = group_name })
 
+	-- Convert hex color to number (remove # and convert to number)
+	local color_num = tonumber(new_color:gsub("#", ""), 16)
+
+	-- If the group is a link, we need to break the link and copy the linked attributes
+	if current_hl.link then
+		-- Get the linked group's attributes
+		local linked_hl = vim.api.nvim_get_hl(0, { name = current_hl.link, link = false })
+		-- Copy all attributes from the linked group
+		current_hl = vim.tbl_extend("force", linked_hl, {})
+		-- Remove the link
+		current_hl.link = nil
+	end
+
 	-- Apply the new color
-	vim.api.nvim_set_hl(0, group_name, vim.tbl_extend("force", current_hl, { fg = new_color }))
+	current_hl.fg = color_num
+	vim.api.nvim_set_hl(0, group_name, current_hl)
 
 	-- Save override
 	M.save_override(group_name, new_color)

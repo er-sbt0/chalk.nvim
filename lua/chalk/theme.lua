@@ -104,9 +104,6 @@ function M.setup(opts)
 	vim.opt.pumblend = 0
 	-- termguicolors is already set in apply_highlights function
 
-	-- Optional: Clear cached data for development
-	require("chalk.util").cache.clear()
-
 	-- Apply terminal colors if enabled
 	if opts.terminal_colors then
 		apply_terminal_colors(colors)

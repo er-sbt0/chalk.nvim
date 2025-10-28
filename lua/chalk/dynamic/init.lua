@@ -87,35 +87,39 @@ function M.setup_keymaps(opts)
 		noremap = true,
 	}, opts or {})
 
+	-- Ensure commands are set up first
+	M.setup_commands()
+
 	local keymap = vim.keymap.set
 
 	-- Define keymaps for dynamic color commands
 	local keymaps = {
 		-- Brightness adjustments
-		{ "b+", ":ChalkIncreaseBrightness<CR>", "Increase brightness" },
-		{ "b-", ":ChalkDecreaseBrightness<CR>", "Decrease brightness" },
+		{ "H", ":ChalkIncreaseBrightness<CR>", "Increase brightness" },
+		{ "J", ":ChalkDecreaseBrightness<CR>", "Decrease brightness" },
 
 		-- Color wheel navigation
-		{ "cn", ":ChalkNextColor<CR>", "Next color" },
-		{ "cp", ":ChalkPrevColor<CR>", "Previous color" },
+		{ "K", ":ChalkNextColor<CR>", "Next color" },
+		{ "L", ":ChalkPrevColor<CR>", "Previous color" },
 
-		-- Color families
-		{ "cw", ":ChalkWarmColor<CR>", "Warm color" },
-		{ "cc", ":ChalkCoolColor<CR>", "Cool color" },
-		{ "cs", ":ChalkSaturated<CR>", "Saturated color" },
-		{ "cm", ":ChalkMuted<CR>", "Muted color" },
+		-- -- Color families
+		-- { "cw", ":ChalkWarmColor<CR>", "Warm color" },
+		-- { "cc", ":ChalkCoolColor<CR>", "Cool color" },
+		-- { "cs", ":ChalkSaturated<CR>", "Saturated color" },
+		-- { "cm", ":ChalkMuted<CR>", "Muted color" },
 
-		-- Utility commands
-		{ "cr", ":ChalkReset<CR>", "Reset colors" },
-		{ "cl", ":ChalkClear<CR>", "Clear overrides" },
-		{ "ci", ":ChalkInspect<CR>", "Inspect group" },
-		{ "cv", ":ChalkShow<CR>", "View overrides" },
+		-- -- Utility commands
+		-- { "cr", ":ChalkReset<CR>", "Reset colors" },
+		-- { "cl", ":ChalkClear<CR>", "Clear overrides" },
+		-- { "ci", ":ChalkInspect<CR>", "Inspect group" },
+		-- { "cv", ":ChalkShow<CR>", "View overrides" },
 	}
 
 	-- Create keymaps with prefix
 	for _, map in ipairs(keymaps) do
 		local key, cmd, desc = map[1], map[2], map[3]
-		keymap("n", opts.prefix .. key, cmd, {
+		-- Apply prefix to key
+		keymap("n", key, cmd, {
 			desc = "Chalk: " .. desc,
 			silent = opts.silent,
 			noremap = opts.noremap,
