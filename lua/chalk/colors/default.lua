@@ -3,24 +3,21 @@
 -- Each color family provides 5 shades from lightest (1) to darkest (5)
 -- Designed with mathematical precision for optimal visual balance
 
--- Import types for LSP support
-require("chalk.types")
-
 ---@type chalk.Palette
 return {
 	-- === EMERALD FAMILY (Sophisticated sage greens) - Nature harmony ===
 	-- === EMERALD FAMILY (Sophisticated sage greens) - Nature harmony ===
 	emerald_1 = "#b7d0ae", -- Light sage mist - gentle natural (from tpm)
-	emerald_2 = "#b3e082", -- Base sage - vibrant sophisticated green (from tpm)
+	emerald_2 = "#a2c498", -- Base sage - sophisticated green
 	emerald_3 = "#88b177", -- Medium forest - balanced green depth (from tpm)
-	emerald_4 = "#6c9632", -- Dark forest - rich natural depth (from tpm)
+	emerald_4 = "#6f9e60", -- Dark forest - rich natural depth
 	emerald_5 = "#529661", -- Darkest pine - deep forest shadow (from tpm)
 
 	-- === LIME FAMILY (Bright vibrant greens) - Fresh energy ===
 	lime_1 = "#c3e88d", -- Light lime - fresh bright green (from tpm)
 	lime_2 = "#abcf74", -- Base lime - vibrant spring green (from tpm)
 	lime_3 = "#9fe044", -- Medium lime - energetic green (from tpm)
-	lime_4 = "#9fe044", -- Dark lime - muted forest green (from tpm)
+	lime_4 = "#92d23d", -- Dark lime - muted forest green
 	lime_5 = "#8ac537", -- Darkest lime - deep natural green (from tpm)
 
 	-- === SAGE FAMILY (Muted herb greens) - Subtle warmth ===
@@ -33,14 +30,14 @@ return {
 	-- === TURQUOISE FAMILY (Vibrant blue-greens) - Ocean elegance ===
 	turquoise_1 = "#b4f9f8", -- Light aqua mist - gentle ocean breeze (from tpm)
 	turquoise_2 = "#93dddc", -- Base turquoise - vibrant ocean sophistication (from tpm)
-	turquoise_3 = "#5cc0b3", -- Medium teal - balanced aquatic depth (from tpm)
-	turquoise_4 = "#1abc9c", -- Dark teal - rich ocean depth (from tpm)
-	turquoise_5 = "#269b84", -- Darkest sea green - deep ocean shadow (from tpm)
+	turquoise_3 = "#72c9c5", -- Medium teal - balanced aquatic depth
+	turquoise_4 = "#51b5b0", -- Dark teal - rich ocean depth
+	turquoise_5 = "#30a19a", -- Darkest sea green - deep ocean shadow
 
 	-- === SEAFOAM FAMILY (Soft green-blue tones) - Ocean breeze elegance ===
 	seafoam_1 = "#A3D4D5", -- Light seafoam - gentle ocean mist (from tpm)
 	seafoam_2 = "#85c4c5", -- Base seafoam - sophisticated aqua green (from tpm)
-	seafoam_3 = "#85c4c5", -- Medium seafoam - balanced ocean depth (from tpm)
+	seafoam_3 = "#6cb8b9", -- Medium seafoam - balanced ocean depth
 	seafoam_4 = "#53b4a7", -- Dark seafoam - rich aqua elegance (from tpm)
 	seafoam_5 = "#449694", -- Darkest seafoam - deep ocean shadow (from tpm)
 
@@ -55,15 +52,15 @@ return {
 	slate_1 = "#8ea4a2", -- Light slate - balanced neutral (from tpm)
 	slate_2 = "#769b98", -- Base slate - sophisticated gray (from tpm)
 	slate_3 = "#618d89", -- Medium slate - balanced gray depth (from tpm)
-	slate_4 = "#46817c", -- Dark slate - rich gray depth (from tpm)
-	slate_5 = "#2e5857", -- Darkest slate - deep shadow (from tpm)
+	slate_4 = "#4e7974", -- Dark slate - rich gray depth
+	slate_5 = "#3b655f", -- Darkest slate - deep shadow
 
 	-- === AMETHYST FAMILY (Rich purple tones) - Luxury elegance ===
 	amethyst_1 = "#b97898", -- Light amethyst - bright purple glow (from tpm)
 	amethyst_2 = "#a56585", -- Base amethyst - rich royal purple (from tpm)
-	amethyst_3 = "#8f5572", -- Medium amethyst - balanced purple depth (from tpm)
-	amethyst_4 = "#6b3d54", -- Dark amethyst - deep royal purple (from tpm)
-	amethyst_5 = "#532b3f", -- Darkest amethyst - profound purple shadow (from tpm)
+	amethyst_3 = "#925274", -- Medium amethyst - balanced purple depth
+	amethyst_4 = "#7e4663", -- Dark amethyst - deep royal purple
+	amethyst_5 = "#6a3952", -- Darkest amethyst - profound purple shadow
 
 	-- === MAUVE FAMILY (Soft purple-gray tones) - Gentle sophistication ===
 	mauve_1 = "#f0c0f0", -- Light mauve mist - gentle purple-gray
@@ -75,7 +72,7 @@ return {
 	-- === PINK FAMILY (Bright magenta-pinks) - Playful vibrancy ===
 	pink_1 = "#fcade2", -- Light pink - gentle cotton candy
 	pink_2 = "#e478b5", -- Base pink - vibrant bright pink
-	pink_3 = "#eb56a8", -- Medium pink - energetic magenta-pink
+	pink_3 = "#d867a3", -- Medium pink - energetic magenta-pink
 	pink_4 = "#cf369c", -- Dark pink - rich fuchsia depth
 	pink_5 = "#aa3388", -- Darkest pink - deep magenta shadow
 
@@ -83,7 +80,7 @@ return {
 	violet_1 = "#c7a9ff", -- Light violet - gentle purple glow (from tpm)
 	violet_2 = "#a689da", -- Base violet - sophisticated purple (from tpm)
 	violet_3 = "#9376c2", -- Medium violet - balanced purple depth (from tpm)
-	violet_4 = "#8356c2", -- Dark violet - rich purple tone (from tpm)
+	violet_4 = "#7f63b0", -- Dark violet - rich purple tone
 	violet_5 = "#6d5d97", -- Darkest violet - deep purple shadow (from tpm)
 
 	-- === INDIGO FAMILY (Deep sophisticated blues) - Rich navy elegance ===
@@ -97,29 +94,29 @@ return {
 	royal_1 = "#8fd0fc", -- Light royal - bright sky blue (from tpm)
 	royal_2 = "#5baae6", -- Base royal - vibrant electric blue (from tpm)
 	royal_3 = "#3f86e9", -- Medium royal - energetic blue (from tpm)
-	royal_4 = "#4066be", -- Dark royal - rich electric depth (from tpm)
-	royal_5 = "#405f83", -- Darkest royal - deep electric shadow (from tpm)
+	royal_4 = "#3574d4", -- Dark royal - rich electric depth
+	royal_5 = "#2e62bf", -- Darkest royal - deep electric shadow
 
 	-- === CYAN FAMILY (Bright blue-cyan tones) - Electric ocean ===
 	cyan_1 = "#86e1fc", -- Light cyan - bright electric blue (from tpm)
 	cyan_2 = "#61c4e2", -- Base cyan - vibrant sky blue (from tpm)
 	cyan_3 = "#2ac3de", -- Medium cyan - energetic ocean blue (from tpm)
 	cyan_4 = "#1fb2cc", -- Dark cyan - rich electric blue (from tpm)
-	cyan_5 = "#2595a8", -- Darkest cyan - deep ocean blue (from tpm)
+	cyan_5 = "#1a9bb8", -- Darkest cyan - deep ocean blue
 
 	-- === AZURE FAMILY (Enhanced ocean blues) - Better visibility ===
 	azure_1 = "#92c2dd", -- Light powder blue - gentle sky (from tpm)
 	azure_2 = "#76bbc9", -- Base steel blue - enhanced visibility (from tpm)
-	azure_3 = "#66a1d1", -- Medium ocean - balanced blue depth (from tpm)
-	azure_4 = "#3a7c96", -- Dark ocean - rich depth with better contrast (from tpm)
+	azure_3 = "#5aa8b5", -- Medium ocean - balanced blue depth
+	azure_4 = "#3e95a2", -- Dark ocean - rich depth with better contrast
 	azure_5 = "#23697c", -- Darkest navy - professional depth (from tpm)
 
 	-- === ROSE FAMILY (Warm red-pink tones) - Sophisticated rose elegance ===
 	rose_1 = "#ff899d", -- Light rose mist - gentle warm red-pink (from tpm)
 	rose_2 = "#eb6f92", -- Base rose - sophisticated warm red (from tpm)
-	rose_3 = "#D27E99", -- Medium rose - balanced red-pink depth (from tpm)
-	rose_4 = "#b35b79", -- Dark rose - rich warm red (from tpm)
-	rose_5 = "#6d3641", -- Darkest rose - deep red shadow (from tpm)
+	rose_3 = "#d27e99", -- Medium rose - balanced red-pink depth (from tpm)
+	rose_4 = "#b96d82", -- Dark rose - rich warm red
+	rose_5 = "#9f5c6b", -- Darkest rose - deep red shadow
 
 	-- === CHERRY FAMILY (Vibrant red-pink tones) - Bright elegance ===
 	cherry_1 = "#ec6788", -- Light cherry - bright pink glow (from tpm)
@@ -132,50 +129,50 @@ return {
 	ruby_1 = "#ff757f", -- Light ruby - gentle red glow (from tpm)
 	ruby_2 = "#E46876", -- Base ruby - vibrant true red (from tpm)
 	ruby_3 = "#c64343", -- Medium ruby - energetic red (from tpm)
-	ruby_4 = "#a4364d", -- Dark ruby - rich red depth (from tpm)
-	ruby_5 = "#914c54", -- Darkest ruby - deep red shadow (from tpm)
+	ruby_4 = "#a83c49", -- Dark ruby - rich red depth
+	ruby_5 = "#8a3540", -- Darkest ruby - deep red shadow
 
 	-- === CRIMSON FAMILY (Deep true reds) - Classic red elegance ===
 	crimson_1 = "#ff5d62", -- Light crimson - bright red glow (from tpm)
 	crimson_2 = "#e74c51", -- Base crimson - pure vibrant red (from tpm)
 	crimson_3 = "#c5363b", -- Medium crimson - balanced red depth (from tpm)
-	crimson_4 = "#a4364d", -- Dark crimson - rich red (from tpm)
-	crimson_5 = "#a01f3b", -- Darkest crimson - deep red shadow (from tpm)
+	crimson_4 = "#a42f35", -- Dark crimson - rich red
+	crimson_5 = "#83282e", -- Darkest crimson - deep red shadow
 
 	-- === CORAL FAMILY (Warm orange-pinks) - Tropical elegance ===
 	coral_1 = "#d38782", -- Light coral blush - gentle tropical warmth (from tpm)
 	coral_2 = "#c4746e", -- Base coral - sophisticated warm pink-orange (from tpm)
 	coral_3 = "#b8605a", -- Medium salmon - balanced coral depth (from tpm)
-	coral_4 = "#ac5164", -- Dark salmon - rich warm coral (from tpm)
-	coral_5 = "#9c3f53", -- Darkest coral - deep tropical shadow (from tpm)
+	coral_4 = "#a55c57", -- Dark salmon - rich warm coral
+	coral_5 = "#924f4a", -- Darkest coral - deep tropical shadow
 
 	-- === PEACH FAMILY (Soft orange-pink tones) - Gentle warmth ===
 	peach_1 = "#d7a8a8", -- Light peach - soft coral glow (from tpm)
 	peach_2 = "#d69999", -- Base peach - warm orange-pink (from tpm)
 	peach_3 = "#ce8282", -- Medium peach - balanced warmth (from tpm)
 	peach_4 = "#c56e6e", -- Dark peach - rich coral depth (from tpm)
-	peach_5 = "#aa5555", -- Darkest peach - deep warm shadow (from tpm)
+	peach_5 = "#b85a5a", -- Darkest peach - deep warm shadow
 
 	-- === COPPER FAMILY (Burnished orange-browns) - Metallic warmth ===
 	copper_1 = "#e7b493", -- Light copper - soft metal glow
 	copper_2 = "#d59b77", -- Base copper - warm orange-brown
-	copper_3 = "#bd7f5d", -- Medium copper - burnished shine
-	copper_4 = "#9e6647", -- Dark copper - forged depth
-	copper_5 = "#7c4c34", -- Darkest copper - patina shadow
+	copper_3 = "#c3885d", -- Medium copper - burnished shine
+	copper_4 = "#b17647", -- Dark copper - forged depth
+	copper_5 = "#9f6334", -- Darkest copper - patina shadow
 
 	-- === YELLOW FAMILY (Bright sunshine tones) - Cheerful energy ===
 	yellow_1 = "#ffd8ab", -- Light yellow - bright sunshine (from tpm)
 	yellow_2 = "#f1d088", -- Base yellow - vibrant golden yellow (from tpm)
 	yellow_3 = "#ebd86c", -- Medium yellow - energetic sunshine (from tpm)
-	yellow_4 = "#ffe15e", -- Dark yellow - rich golden warmth (from tpm)
-	yellow_5 = "#fcf947", -- Darkest yellow - deep golden shadow (from tpm)
+	yellow_4 = "#e0c555", -- Dark yellow - rich golden warmth
+	yellow_5 = "#d4b23e", -- Darkest yellow - deep golden shadow
 
 	-- === ORANGE FAMILY (Vibrant citrus tones) - Energetic warmth ===
-	orange_1 = "#ef9f76", -- Darkest rust orange - deep citrus shadow (from tpm)
-	orange_2 = "#fda751", -- Light peach - gentle citrus glow (from tpm)
-	orange_3 = "#FF9E3B", -- Base orange - vibrant citrus energy (from tpm)
-	orange_4 = "#e98a00", -- Medium tangerine - balanced orange depth (from tpm)
-	orange_5 = "#cc6d00", -- Dark burnt orange - rich citrus depth (from tpm)
+	orange_1 = "#fda751", -- Light peach - gentle citrus glow (from tpm)
+	orange_2 = "#FF9E3B", -- Base orange - vibrant citrus energy (from tpm)
+	orange_3 = "#f08b2e", -- Medium orange - balanced citrus depth
+	orange_4 = "#e98a00", -- Dark tangerine - rich orange depth (from tpm)
+	orange_5 = "#cc6d00", -- Darkest burnt orange - deep citrus shadow (from tpm)
 
 	-- === TANGERINE FAMILY (Bright orange tones) - Zesty energy ===
 	tangerine_1 = "#f6c177", -- Light tangerine - bright citrus glow (from tpm)
@@ -250,9 +247,9 @@ return {
 	-- === POWDER FAMILY (Soft dusty blue tones) - Gentle sophistication ===
 	powder_1 = "#c6d1db", -- Light powder - gentle dusty blue
 	powder_2 = "#b8c8d8", -- Base powder - sophisticated dusty blue
-	powder_3 = "#b1bbc5", -- Medium powder - balanced dusty depth
-	powder_4 = "#a0afbd", -- Dark powder - rich dusty blue
-	powder_5 = "#818b97", -- Darkest powder - deep dusty shadow
+	powder_3 = "#aabeca", -- Medium powder - balanced dusty depth
+	powder_4 = "#9bb4bb", -- Dark powder - rich dusty blue
+	powder_5 = "#8caab1", -- Darkest powder - deep dusty shadow
 
 	-- === SHADOW FAMILY (Cool near-neutrals) - Depth and contrast ===
 	shadow_1 = "#c4c7d4", -- Light shadow - misted cool gray
@@ -265,8 +262,8 @@ return {
 	bg_1 = "#959dbd", -- Base background - elegant chalkboard
 	bg_2 = "#7d84a1", -- Base background - elegant chalkboard
 	bg_3 = "#697088", -- Base background - elegant chalkboard
-	bg_4 = "#51576b", -- Base background - elegant chalkboard
-	bg_5 = "#333644", -- Base background - elegant chalkboard
+	bg_4 = "#565c6f", -- Base background - elegant chalkboard
+	bg_5 = "#424856", -- Base background - elegant chalkboard
 
 	-- === FOREGROUND PROGRESSION (Enhanced readability chalk whites) ===
 	fg_darker = "#424140", -- Darkest foreground - improved contrast (gray_3)

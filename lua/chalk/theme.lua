@@ -6,27 +6,28 @@ local M = {}
 ---Apply terminal colors based on color scheme
 ---@param colors chalk.ColorScheme Color scheme with terminal colors
 local function apply_terminal_colors(colors)
-	if not colors.terminal then
+	local c = colors
+	if not c.terminal then
 		return
 	end
 
 	-- Set standard 16-color terminal palette
-	vim.g.terminal_color_0 = colors.terminal.black
-	vim.g.terminal_color_1 = colors.terminal.red
-	vim.g.terminal_color_2 = colors.terminal.green
-	vim.g.terminal_color_3 = colors.terminal.yellow
-	vim.g.terminal_color_4 = colors.terminal.blue
-	vim.g.terminal_color_5 = colors.terminal.magenta
-	vim.g.terminal_color_6 = colors.terminal.cyan
-	vim.g.terminal_color_7 = colors.terminal.white
-	vim.g.terminal_color_8 = colors.terminal.bright_black
-	vim.g.terminal_color_9 = colors.terminal.bright_red
-	vim.g.terminal_color_10 = colors.terminal.bright_green
-	vim.g.terminal_color_11 = colors.terminal.bright_yellow
-	vim.g.terminal_color_12 = colors.terminal.bright_blue
-	vim.g.terminal_color_13 = colors.terminal.bright_magenta
-	vim.g.terminal_color_14 = colors.terminal.bright_cyan
-	vim.g.terminal_color_15 = colors.terminal.bright_white
+	vim.g.terminal_color_0 = c.terminal.black
+	vim.g.terminal_color_1 = c.terminal.red
+	vim.g.terminal_color_2 = c.terminal.green
+	vim.g.terminal_color_3 = c.terminal.yellow
+	vim.g.terminal_color_4 = c.terminal.blue
+	vim.g.terminal_color_5 = c.terminal.magenta
+	vim.g.terminal_color_6 = c.terminal.cyan
+	vim.g.terminal_color_7 = c.terminal.white
+	vim.g.terminal_color_8 = c.terminal.bright_black
+	vim.g.terminal_color_9 = c.terminal.bright_red
+	vim.g.terminal_color_10 = c.terminal.bright_green
+	vim.g.terminal_color_11 = c.terminal.bright_yellow
+	vim.g.terminal_color_12 = c.terminal.bright_blue
+	vim.g.terminal_color_13 = c.terminal.bright_magenta
+	vim.g.terminal_color_14 = c.terminal.bright_cyan
+	vim.g.terminal_color_15 = c.terminal.bright_white
 end
 
 ---Apply highlight groups to Neovim
@@ -76,10 +77,6 @@ function M.setup(opts)
 		opts.on_highlights(highlights, colors)
 	end
 
-	-- Apply dynamic color overrides (final step)
-	local dynamic = require("chalk.utils.dynamic")
-	highlights = dynamic.apply_overrides(highlights, colors)
-
 	-- Set colorscheme name with variant
 	local colorscheme_name = "chalk"
 	if opts.variant ~= "default" then
@@ -97,6 +94,10 @@ function M.setup(opts)
 	-- Apply highlights to Neovim
 	apply_highlights(highlights)
 
+	-- Apply dynamic color overrides (after highlights are set)
+	local dynamic = require("chalk.utils.dynamic")
+	dynamic.apply_overrides()
+
 	-- Apply additional Neovim options for optimal theme experience
 	-- Optional: win/popup blends so "shadow" groups aren't needed
 	vim.opt.winblend = 0
@@ -111,16 +112,9 @@ function M.setup(opts)
 		apply_terminal_colors(colors)
 	end
 
-	-- Initialize dynamic color system
+	-- Setup dynamic color system if enabled
 	if opts.enable_dynamic_colors ~= false then -- Default to enabled
-		dynamic.init(colors, highlights, opts)
-
-		-- Setup keymaps if enabled
-		if opts.dynamic_keymaps ~= false then
-			dynamic.setup_keymaps({ prefix = opts.dynamic_prefix })
-		end
-
-		-- Setup Ex commands
+		-- Setup Ex commands (keymaps are handled separately via utils.setup_keymaps if needed)
 		dynamic.setup_commands()
 	end
 

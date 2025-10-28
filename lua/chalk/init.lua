@@ -3,9 +3,6 @@
 
 local Config = require("chalk.config")
 
--- Import types for LSP support
-require("chalk.types")
-
 local M = {}
 
 ---@type {light?: string, dark?: string}

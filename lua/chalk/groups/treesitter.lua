@@ -6,9 +6,6 @@ local M = {}
 -- Import language-specific configurations
 local languages = require("chalk.groups.languages")
 
--- Import types for LSP support
-require("chalk.types")
-
 ---Setup TreeSitter highlight groups
 ---@param colors chalk.ColorScheme Color scheme
 ---@param opts chalk.Config Configuration
@@ -73,7 +70,7 @@ function M.setup(colors, opts)
 		["@keyword.storage"] = { fg = c.azure_1 },
 
 		-- Labels
-		["@label"] = { fg = c.azure_1 }, -- Cyan turquoise
+		["@label"] = { fg = c.azure_1 },
 		["@spell"] = { fg = c.stone_3 },
 
 		-- Literals

@@ -219,11 +219,11 @@ M.cache = {}
 
 ---Clear all cached data including dynamic overrides
 function M.cache.clear()
-	-- Clear dynamic color system cache
+	-- Clear dynamic color system cache (safe for theme loading)
 	local has_dynamic, dynamic = pcall(require, "chalk.utils.dynamic")
-	if has_dynamic then
-		dynamic.clear_overrides()
-		dynamic.clear_change_history()
+	if has_dynamic and dynamic.clear_cache then
+		-- Use safe cache clear that doesn't reload colorscheme
+		dynamic.clear_cache()
 	end
 
 	-- Clear module cache for chalk modules

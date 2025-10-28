@@ -1,199 +1,466 @@
--- Dynamic color adjustment for chalk.nvim
--- Refactored modular system for real-time color changes
---
--- OVERVIEW:
--- - Real-time TreeSitter-based color adjustment under cursor
--- - Persistent override system with file-based storage
--- - Brightness, saturation, hue, and color family adjustments
--- - Interactive commands and keymaps for easy use
+-- Dynamic color adjustment system for chalk.nvim
+-- Consolidated from multiple sub-modules for simplicity
 
 local M = {}
-local shared = require("chalk.utils.shared")
+local colors = require("chalk.utils.colors")
 
--- Sub-modules (lazy-loaded)
-local _modules = {}
+-- State management
+local _state = {
+	overrides = {},
+	override_file = vim.fn.stdpath("config") .. "/chalk-overrides.lua",
+}
 
----Get override management module
----@return table overrides Override module
-function M.overrides()
-	if not _modules.overrides then
-		_modules.overrides = require("chalk.utils.dynamic.overrides")
-	end
-	return _modules.overrides
+-- Utility functions
+
+---Notify with consistent formatting
+---@param message string Message to display
+---@param level? number Log level (default: INFO)
+---@param title? string Optional title prefix
+local function notify(message, level, title)
+	level = level or vim.log.levels.INFO
+	title = title or "Dynamic"
+	vim.notify(string.format("[%s] %s", title, message), level)
 end
 
----Get TreeSitter analysis module
----@return table treesitter TreeSitter module
-function M.treesitter()
-	if not _modules.treesitter then
-		_modules.treesitter = require("chalk.utils.dynamic.treesitter")
-	end
-	return _modules.treesitter
+---Safe module loading
+---@param name string Module name
+---@return table|nil Module or nil if failed
+local function safe_require(name)
+	local ok, result = pcall(require, name)
+	return ok and result or nil
 end
 
----Get color adjustment module
----@return table adjustment Adjustment module
-function M.adjustment()
-	if not _modules.adjustment then
-		_modules.adjustment = require("chalk.utils.dynamic.adjustment")
+---Get current chalk colors
+---@return table|nil Colors table
+local function get_chalk_colors()
+	local chalk_colors = safe_require("chalk.colors.default")
+	if not chalk_colors then
+		notify("Failed to load chalk colors", vim.log.levels.ERROR)
+		return nil
 	end
-	return _modules.adjustment
+	return chalk_colors
 end
 
----Get interactive functions module
----@return table interactive Interactive module
-function M.interactive()
-	if not _modules.interactive then
-		_modules.interactive = require("chalk.utils.dynamic.interactive")
+---Reload chalk colorscheme with current config
+local function reload_colorscheme()
+	local Config = safe_require("chalk.config")
+	if Config then
+		vim.cmd("colorscheme chalk")
+		M.apply_overrides()
 	end
-	return _modules.interactive
 end
 
----Get commands module
----@return table commands Commands module
-function M.commands()
-	if not _modules.commands then
-		_modules.commands = require("chalk.utils.dynamic.commands")
+-- TreeSitter integration
+
+---Get TreeSitter capture at cursor position
+---@param bufnr? number Buffer number (default: current)
+---@param row? number Row position (default: cursor row)
+---@param col? number Column position (default: cursor col)
+---@return string|nil capture TreeSitter capture name
+function M.get_ts_capture_at_cursor(bufnr, row, col)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+	if not row or not col then
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		row, col = cursor[1] - 1, cursor[2] -- Convert to 0-indexed
 	end
-	return _modules.commands
+
+	-- Check if TreeSitter is available for this buffer
+	local ok, parser = pcall(vim.treesitter.get_parser, bufnr)
+	if not ok or not parser then
+		return nil
+	end
+
+	-- Get the syntax tree
+	local tree = parser:parse()[1]
+	if not tree then
+		return nil
+	end
+
+	-- Find the node at cursor position
+	local node = tree:root():descendant_for_range(row, col, row, col)
+	if not node then
+		return nil
+	end
+
+	-- Get capture names for this node
+	local query = vim.treesitter.query.get(parser:lang(), "highlights")
+	if not query then
+		return nil
+	end
+
+	-- Find captures that match this node
+	for capture_id, capture_node in query:iter_captures(tree:root(), bufnr, row, row + 1) do
+		if capture_node == node then
+			local capture_name = query.captures[capture_id]
+			return "@" .. capture_name
+		end
+	end
+
+	return nil
 end
 
--- Legacy API compatibility (delegate to sub-modules)
+---Get highlight group name for TreeSitter capture
+---@param capture string TreeSitter capture (e.g., "@keyword")
+---@return string|nil Highlight group name
+local function get_highlight_group_for_capture(capture)
+	-- Common TreeSitter capture to highlight group mappings
+	local mappings = {
+		["@keyword"] = "Keyword",
+		["@function"] = "Function",
+		["@variable"] = "Identifier",
+		["@string"] = "String",
+		["@comment"] = "Comment",
+		["@number"] = "Number",
+		["@boolean"] = "Boolean",
+		["@type"] = "Type",
+		["@constant"] = "Constant",
+		["@operator"] = "Operator",
+		["@punctuation"] = "Delimiter",
+		["@tag"] = "Tag",
+		["@attribute"] = "PreProc",
+		["@namespace"] = "Include",
+		["@field"] = "Identifier",
+		["@property"] = "Identifier",
+		["@parameter"] = "Identifier",
+		["@label"] = "Label",
+	}
 
----Initialize the dynamic color system
----@param colors? table Color scheme
----@param highlights? table Highlights
----@param config? table Configuration
-function M.init(colors, highlights, config) end
+	return mappings[capture] or capture:gsub("^@", ""):gsub("^%l", string.upper)
+end
+
+-- Override management
 
 ---Load overrides from file
----@return table overrides Table of highlight group overrides
+---@return table Overrides table
 function M.load_overrides()
-	return M.overrides().load_overrides()
+	if vim.fn.filereadable(_state.override_file) == 0 then
+		return {}
+	end
+
+	local ok, result = pcall(dofile, _state.override_file)
+	if ok and type(result) == "table" then
+		_state.overrides = result
+		return result
+	end
+
+	return {}
 end
 
 ---Save override for a highlight group
 ---@param group_name string Highlight group name
 ---@param color string Hex color value
 function M.save_override(group_name, color)
-	return M.overrides().save_override(group_name, color)
+	_state.overrides[group_name] = color
+	M.write_overrides()
+end
+
+---Write current overrides to file
+function M.write_overrides()
+	local lines = {
+		"-- Chalk.nvim dynamic color overrides",
+		"-- Generated automatically by dynamic color system",
+		"",
+		"return {",
+	}
+
+	for group, color in pairs(_state.overrides) do
+		table.insert(lines, string.format('  ["%s"] = "%s",', group, color))
+	end
+
+	table.insert(lines, "}")
+
+	-- Write to file
+	local file = io.open(_state.override_file, "w")
+	if file then
+		file:write(table.concat(lines, "\n"))
+		file:close()
+	else
+		notify("Failed to write overrides file", vim.log.levels.ERROR)
+	end
 end
 
 ---Clear all overrides
 function M.clear_overrides()
-	return M.overrides().clear_overrides()
+	_state.overrides = {}
+
+	-- Remove the file
+	if vim.fn.filereadable(_state.override_file) == 1 then
+		vim.fn.delete(_state.override_file)
+	end
+
+	-- Reload colorscheme to remove overrides
+	reload_colorscheme()
+	notify("All overrides cleared")
 end
 
----Apply overrides to highlights
----@param highlights table Highlight groups
----@param colors table Colors
----@return table Updated highlights
-function M.apply_overrides(highlights, colors)
-	return M.overrides().apply_overrides(highlights, colors)
+---Clear cache only (for use during theme loading to avoid recursion)
+function M.clear_cache()
+	_state.overrides = {}
+	-- Don't reload colorscheme or delete file during theme loading
 end
 
----Get TreeSitter capture at cursor
----@param bufnr? number Buffer number
----@param row? number Row position
----@param col? number Column position
----@return string|nil capture TreeSitter capture name
-function M.get_ts_capture_at_cursor(bufnr, row, col)
-	return M.treesitter().get_ts_capture_at_cursor(bufnr, row, col)
+---Apply current overrides to highlight groups
+function M.apply_overrides()
+	local overrides = M.load_overrides()
+
+	for group_name, color in pairs(overrides) do
+		local current_hl = vim.api.nvim_get_hl(0, { name = group_name })
+		if current_hl then
+			-- Preserve other attributes, just change the foreground color
+			vim.api.nvim_set_hl(0, group_name, vim.tbl_extend("force", current_hl, { fg = color }))
+		else
+			-- Create new highlight group if it doesn't exist
+			vim.api.nvim_set_hl(0, group_name, { fg = color })
+		end
+	end
 end
 
----Get color for highlight group
+-- Color adjustment functions
+
+---Get current foreground color for a highlight group
 ---@param group_name string Highlight group name
----@return string|nil color Hex color
-function M.get_group_color(group_name)
-	return M.adjustment().get_group_color(group_name)
-end
-
----Adjust brightness of a color
----@param color string Hex color
----@param adjustment number Brightness adjustment
----@return string new_color Adjusted color
-function M.adjust_brightness(color, adjustment)
-	return shared.color_utils().adjust_brightness(color, adjustment)
+---@return string|nil Hex color or nil if not found
+local function get_group_color(group_name)
+	local hl = vim.api.nvim_get_hl(0, { name = group_name })
+	if hl and hl.fg then
+		return string.format("#%06x", hl.fg)
+	end
+	return nil
 end
 
 ---Apply color change to highlight group
 ---@param group_name string Highlight group name
 ---@param new_color string New hex color
----@param color_var_name? string Color variable name
-function M.apply_color_change(group_name, new_color, color_var_name)
-	return M.adjustment().apply_color_change(group_name, new_color, color_var_name)
+local function apply_color_change(group_name, new_color)
+	-- Get current highlight group
+	local current_hl = vim.api.nvim_get_hl(0, { name = group_name })
+
+	-- Apply the new color
+	vim.api.nvim_set_hl(0, group_name, vim.tbl_extend("force", current_hl, { fg = new_color }))
+
+	-- Save override
+	M.save_override(group_name, new_color)
 end
 
--- Interactive functions (most commonly used)
+-- Interactive functions
 
 ---Increase brightness of TreeSitter group under cursor
 function M.increase_brightness()
-	return M.interactive().increase_brightness()
+	local capture = M.get_ts_capture_at_cursor()
+	if not capture then
+		notify("No TreeSitter capture found at cursor", vim.log.levels.WARN)
+		return
+	end
+
+	local group_name = get_highlight_group_for_capture(capture)
+	local current_color = get_group_color(group_name)
+
+	if not current_color then
+		notify(string.format("No color found for group: %s", group_name), vim.log.levels.WARN)
+		return
+	end
+
+	local new_color = colors.adjust_brightness(current_color, 10)
+	apply_color_change(group_name, new_color)
+
+	notify(string.format("Increased brightness: %s → %s", group_name, new_color))
 end
 
 ---Decrease brightness of TreeSitter group under cursor
 function M.decrease_brightness()
-	return M.interactive().decrease_brightness()
+	local capture = M.get_ts_capture_at_cursor()
+	if not capture then
+		notify("No TreeSitter capture found at cursor", vim.log.levels.WARN)
+		return
+	end
+
+	local group_name = get_highlight_group_for_capture(capture)
+	local current_color = get_group_color(group_name)
+
+	if not current_color then
+		notify(string.format("No color found for group: %s", group_name), vim.log.levels.WARN)
+		return
+	end
+
+	local new_color = colors.adjust_brightness(current_color, -10)
+	apply_color_change(group_name, new_color)
+
+	notify(string.format("Decreased brightness: %s → %s", group_name, new_color))
 end
 
----Change color in direction (next/previous)
----@param direction number Direction: 1 for next, -1 for previous
+---Change color in wheel direction
+---@param direction number Direction (1 for next, -1 for previous)
 function M.change_color(direction)
-	return M.interactive().change_color(direction)
+	local capture = M.get_ts_capture_at_cursor()
+	if not capture then
+		notify("No TreeSitter capture found at cursor", vim.log.levels.WARN)
+		return
+	end
+
+	local group_name = get_highlight_group_for_capture(capture)
+	local current_color = get_group_color(group_name)
+
+	if not current_color then
+		notify(string.format("No color found for group: %s", group_name), vim.log.levels.WARN)
+		return
+	end
+
+	local new_color = colors.get_wheel_color(current_color, direction)
+	apply_color_change(group_name, new_color)
+
+	local direction_text = direction > 0 and "next" or "previous"
+	notify(string.format("Changed to %s color: %s → %s", direction_text, group_name, new_color))
 end
 
 ---Change color by family
 ---@param family string Color family ("warm", "cool", "saturated", "muted")
----@param direction number Direction
+---@param direction number Direction (1 or -1)
 function M.change_color_by_family(family, direction)
-	return M.interactive().change_color_by_family(family, direction)
+	local capture = M.get_ts_capture_at_cursor()
+	if not capture then
+		notify("No TreeSitter capture found at cursor", vim.log.levels.WARN)
+		return
+	end
+
+	local group_name = get_highlight_group_for_capture(capture)
+	local current_color = get_group_color(group_name)
+
+	if not current_color then
+		notify(string.format("No color found for group: %s", group_name), vim.log.levels.WARN)
+		return
+	end
+
+	local new_color = colors.apply_color_family(current_color, family, direction)
+	apply_color_change(group_name, new_color)
+
+	notify(string.format("Applied %s color family: %s → %s", family, group_name, new_color))
 end
 
----Reset colors to original
+---Reset colors by clearing overrides and reloading
 function M.reset_colors()
-	return M.interactive().reset_colors()
+	M.clear_overrides()
+	notify("Colors reset to original")
 end
 
 ---Inspect TreeSitter group under cursor
 function M.inspect_group()
-	return M.interactive().inspect_group()
+	local capture = M.get_ts_capture_at_cursor()
+	if not capture then
+		notify("No TreeSitter capture found at cursor", vim.log.levels.WARN)
+		return
+	end
+
+	local group_name = get_highlight_group_for_capture(capture)
+	local current_color = get_group_color(group_name)
+
+	local info = {
+		string.format("TreeSitter capture: %s", capture),
+		string.format("Highlight group: %s", group_name),
+		string.format("Current color: %s", current_color or "none"),
+	}
+
+	if current_color then
+		local h, s, l = colors.hex_to_hsl(current_color)
+		table.insert(info, string.format("HSL: %.0f, %.0f%%, %.0f%%", h, s, l))
+	end
+
+	notify(table.concat(info, " | "))
 end
 
----Dump TreeSitter structure for current buffer
-function M.dump_treesitter_structure(bufnr)
-	return M.treesitter().dump_treesitter_structure(bufnr)
+---Show current overrides
+function M.show_overrides()
+	local overrides = M.load_overrides()
+
+	if vim.tbl_isempty(overrides) then
+		notify("No active overrides")
+		return
+	end
+
+	print("Active Color Overrides:")
+	print(string.rep("-", 50))
+	for group, color in pairs(overrides) do
+		print(string.format("%-25s %s", group, color))
+	end
+	print(string.rep("-", 50))
+	print(string.format("Total: %d overrides", vim.tbl_count(overrides)))
 end
 
--- Utility functions
+-- Command setup
 
----Get current changes/overrides
----@return table changes Current changes
-function M.get_changes()
-	return M.overrides().load_overrides()
-end
-
----Show changes in a buffer
-function M.show_changes_in_buffer()
-	return M.interactive().show_changes()
-end
-
----Clear change history (compatibility function)
-function M.clear_change_history()
-	-- In the new modular system, this is handled by clearing overrides
-	return M.clear_overrides()
-end
-
--- Setup functions
-
----Setup dynamic color commands
+---Setup all dynamic color commands
 function M.setup_commands()
-	return M.commands().setup_commands()
+	local commands = {
+		ChalkDynamicIncreaseBrightness = {
+			callback = M.increase_brightness,
+			opts = { desc = "Increase brightness of TreeSitter group under cursor" },
+		},
+		ChalkDynamicDecreaseBrightness = {
+			callback = M.decrease_brightness,
+			opts = { desc = "Decrease brightness of TreeSitter group under cursor" },
+		},
+		ChalkDynamicNextColor = {
+			callback = function()
+				M.change_color(1)
+			end,
+			opts = { desc = "Change to next color in color wheel" },
+		},
+		ChalkDynamicPrevColor = {
+			callback = function()
+				M.change_color(-1)
+			end,
+			opts = { desc = "Change to previous color in color wheel" },
+		},
+		ChalkDynamicWarmColor = {
+			callback = function()
+				M.change_color_by_family("warm", 1)
+			end,
+			opts = { desc = "Apply warm color family" },
+		},
+		ChalkDynamicCoolColor = {
+			callback = function()
+				M.change_color_by_family("cool", 1)
+			end,
+			opts = { desc = "Apply cool color family" },
+		},
+		ChalkDynamicSaturated = {
+			callback = function()
+				M.change_color_by_family("saturated", 1)
+			end,
+			opts = { desc = "Make color more saturated" },
+		},
+		ChalkDynamicMuted = {
+			callback = function()
+				M.change_color_by_family("muted", 1)
+			end,
+			opts = { desc = "Make color more muted" },
+		},
+		ChalkDynamicReset = {
+			callback = M.reset_colors,
+			opts = { desc = "Reset all colors to original" },
+		},
+		ChalkDynamicClear = {
+			callback = M.clear_overrides,
+			opts = { desc = "Clear all color overrides" },
+		},
+		ChalkDynamicShow = {
+			callback = M.show_overrides,
+			opts = { desc = "Show current color overrides" },
+		},
+		ChalkDynamicInspect = {
+			callback = M.inspect_group,
+			opts = { desc = "Inspect TreeSitter group under cursor" },
+		},
+	}
+
+	for name, def in pairs(commands) do
+		vim.api.nvim_create_user_command(name, def.callback, def.opts)
+	end
+
+	notify("Dynamic color commands enabled")
 end
 
----Setup dynamic color keymaps
----@param opts? table Keymap options
-function M.setup_keymaps(opts)
-	return M.commands().setup_keymaps(opts)
-end
+-- Initialize by loading existing overrides
+M.load_overrides()
 
 return M

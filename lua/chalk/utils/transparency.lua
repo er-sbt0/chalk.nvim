@@ -2,7 +2,39 @@
 -- Provides functions to enable/disable/toggle transparency
 
 local M = {}
-local shared = require("chalk.utils.shared")
+
+---Notify with consistent formatting
+---@param message string Message to display
+---@param level? number Log level (default: INFO)
+local function notify(message, level)
+	level = level or vim.log.levels.INFO
+	vim.notify(string.format("[Transparency] %s", message), level)
+end
+
+---Safe module loading
+---@param name string Module name
+---@return table|nil Module or nil if failed
+local function safe_require(name)
+	local ok, result = pcall(require, name)
+	return ok and result or nil
+end
+
+---Get current chalk config
+---@return table|nil Config table
+local function get_chalk_config()
+	local Config = safe_require("chalk.config")
+	return Config and Config.get() or nil
+end
+
+---Reload chalk colorscheme with new config
+---@param new_config table Config overrides
+local function reload_colorscheme(new_config)
+	local chalk = safe_require("chalk")
+	if chalk then
+		chalk.setup(new_config)
+		vim.cmd("colorscheme chalk")
+	end
+end
 
 ---Apply transparency to specific highlight groups
 ---This function applies the transparency overrides you requested
@@ -28,20 +60,22 @@ end
 
 ---Enable transparency through colorscheme config and reload
 function M.enable()
-	shared.chalk_integration().reload_colorscheme({ transparent = true })
-	shared.notify("Transparency enabled", vim.log.levels.INFO, "Transparency")
+	local current_config = get_chalk_config() or {}
+	reload_colorscheme(vim.tbl_extend("force", current_config, { transparent = true }))
+	notify("Transparency enabled")
 end
 
 ---Disable transparency through colorscheme config and reload
 function M.disable()
-	shared.chalk_integration().reload_colorscheme({ transparent = false })
-	shared.notify("Transparency disabled", vim.log.levels.INFO, "Transparency")
+	local current_config = get_chalk_config() or {}
+	reload_colorscheme(vim.tbl_extend("force", current_config, { transparent = false }))
+	notify("Transparency disabled")
 end
 
 ---Toggle transparency on/off
 function M.toggle()
-	local current_config = shared.chalk_integration().get_current_config()
-	if current_config.transparent then
+	local current_config = get_chalk_config()
+	if current_config and current_config.transparent then
 		M.disable()
 	else
 		M.enable()
@@ -57,8 +91,13 @@ end
 
 ---Remove transparency overrides (restore backgrounds)
 function M.remove_overrides()
-	local Theme = require("chalk.theme")
-	local Config = require("chalk.config")
+	local Theme = safe_require("chalk.theme")
+	local Config = safe_require("chalk.config")
+
+	if not Theme or not Config then
+		notify("Failed to load chalk modules", vim.log.levels.ERROR)
+		return
+	end
 
 	-- Get current colors without transparency
 	local config = Config.get()
@@ -88,15 +127,11 @@ function M.remove_overrides()
 	-- Restore original setting
 	config.transparent = original_transparent
 
-	vim.notify("Transparency overrides removed", vim.log.levels.INFO)
+	notify("Transparency overrides removed")
 end
 
 ---Setup transparency commands
 function M.setup_commands()
-	if not shared.command_utils().check_setup_needed("transparency") then
-		return
-	end
-
 	local commands = {
 		ChalkTransparencyEnable = {
 			callback = M.enable,
@@ -120,14 +155,18 @@ function M.setup_commands()
 		},
 	}
 
-	shared.command_utils().setup_commands(commands)
+	for name, def in pairs(commands) do
+		vim.api.nvim_create_user_command(name, def.callback, def.opts)
+	end
+
+	notify("Transparency commands enabled")
 end
 
 ---Get current transparency status
 ---@return boolean Whether transparency is currently enabled
 function M.is_enabled()
-	local Config = require("chalk.config")
-	return Config.get().transparent
+	local config = get_chalk_config()
+	return config and config.transparent or false
 end
 
 return M
