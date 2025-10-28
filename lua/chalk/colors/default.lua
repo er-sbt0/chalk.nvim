@@ -6,7 +6,6 @@
 ---@type chalk.Palette
 return {
 	-- === EMERALD FAMILY (Sophisticated sage greens) - Nature harmony ===
-	-- === EMERALD FAMILY (Sophisticated sage greens) - Nature harmony ===
 	emerald_1 = "#b7d0ae", -- Light sage mist - gentle natural (from tpm)
 	emerald_2 = "#a2c498", -- Base sage - sophisticated green
 	emerald_3 = "#88b177", -- Medium forest - balanced green depth (from tpm)

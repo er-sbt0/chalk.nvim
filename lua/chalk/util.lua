@@ -213,6 +213,30 @@ function M.ensure_contrast(color, background, min_contrast)
 	return bg_lum > 0.5 and "#000000" or "#ffffff"
 end
 
+---Apply transparency to a highlight definition
+---@param hl table Highlight definition
+---@return table Modified highlight
+function M.make_transparent(hl)
+	if type(hl) == "table" then
+		hl.bg = "NONE"
+		hl.ctermbg = "NONE"
+	end
+	return hl
+end
+
+---Apply transparency to multiple highlight groups
+---@param highlights table Highlight groups
+---@param group_names string[] Groups to make transparent
+---@return table Modified highlights
+function M.apply_transparency(highlights, group_names)
+	for _, group in ipairs(group_names) do
+		if highlights[group] then
+			highlights[group] = M.make_transparent(highlights[group])
+		end
+	end
+	return highlights
+end
+
 ---Cache management for chalk theme system
 M.cache = {}
 

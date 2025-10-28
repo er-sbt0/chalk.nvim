@@ -366,13 +366,19 @@ function M.show_overrides()
 		return
 	end
 
-	print("Active Color Overrides:")
-	print(string.rep("-", 50))
+	local lines = {
+		"Active Color Overrides:",
+		string.rep("-", 50),
+	}
+	
 	for group, color in pairs(overrides) do
-		print(string.format("%-25s %s", group, color))
+		table.insert(lines, string.format("%-25s %s", group, color))
 	end
-	print(string.rep("-", 50))
-	print(string.format("Total: %d overrides", vim.tbl_count(overrides)))
+	
+	table.insert(lines, string.rep("-", 50))
+	table.insert(lines, string.format("Total: %d overrides", vim.tbl_count(overrides)))
+	
+	vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
 end
 
 -- Command setup

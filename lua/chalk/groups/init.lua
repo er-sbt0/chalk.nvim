@@ -3,6 +3,23 @@ local Config = require("chalk.config")
 
 local M = {}
 
+---Available highlight groups for fast lookup
+M.available_groups = {
+	-- Base groups (always available)
+	base = true,
+	treesitter = true,
+	
+	-- Plugin groups (with dedicated files)
+	telescope = true,
+	nvim_cmp = true,
+	gitsigns = true,
+	which_key = true,
+	bufferline = true,
+	treesitter_context = true,
+	nvim_tree = true,
+	noice = true,
+}
+
 ---Plugin to group mapping for organized plugin support
 M.plugins = {
 	-- Plugins with dedicated highlight support files
@@ -194,6 +211,12 @@ end
 ---@param name string Group name to check
 ---@return boolean Whether the group exists
 function M.has_group(name)
+	-- Fast path: check known groups first
+	if M.available_groups[name] ~= nil then
+		return M.available_groups[name]
+	end
+	
+	-- Fallback: try to load (for dynamic/future groups)
 	return M.get_group(name) ~= nil
 end
 
