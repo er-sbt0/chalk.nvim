@@ -1,8 +1,3 @@
--- Harmonious Chalky Earth - A sophisticated color scheme designed for visual harmony
--- Based on perceptual color theory with earth tones and refined jewel accents
--- Each color family provides 5 shades from lightest (1) to darkest (5)
--- Designed with mathematical precision for optimal visual balance
-
 ---@type chalk.Palette
 return {
 	-- === EMERALD FAMILY (Sophisticated sage greens) - Nature harmony ===

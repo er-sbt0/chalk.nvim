@@ -451,8 +451,6 @@ function M.setup_commands()
 	for name, def in pairs(commands) do
 		vim.api.nvim_create_user_command(name, def.callback, def.opts)
 	end
-
-	notify("Dynamic color commands enabled")
 end
 
 -- Initialize by loading existing overrides

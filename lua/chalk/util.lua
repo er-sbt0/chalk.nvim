@@ -114,7 +114,6 @@ function M.mod(modname, silent)
 		if not silent then
 			M.error("Failed to load module '" .. modname .. "'")
 		end
-		end
 		return nil
 	end
 	return result

@@ -121,8 +121,6 @@ function M.setup_keymaps(opts)
 			noremap = opts.noremap,
 		})
 	end
-
-	vim.notify(string.format("[Dynamic] Keymaps enabled with prefix '%s'", opts.prefix), vim.log.levels.INFO)
 end
 
 -- Export commonly used functions for convenience
