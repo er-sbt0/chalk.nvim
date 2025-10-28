@@ -36,6 +36,7 @@ M.defaults = {
 	dynamic_step = 0.1, -- Brightness adjustment step size (0.0-1.0)
 
 	-- Caching for performance
+	-- TODO: Not yet implemented - placeholder for future feature
 	cache = true,
 
 	-- Plugin integrations with auto-detection
