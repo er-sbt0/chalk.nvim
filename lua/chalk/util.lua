@@ -2,7 +2,6 @@ local M = {}
 
 -- Default chalk colors
 M.bg = "#1e1e2e" -- Default chalk background (main)
-M.bg_3 = "#1e1e2e" -- Default chalk background (main) - alias for compatibility
 M.fg = "#c9c7cd" -- Default chalk foreground
 
 ---Convert hex color to RGB values
@@ -220,7 +219,7 @@ M.cache = {}
 ---Clear all cached data including dynamic overrides
 function M.cache.clear()
 	-- Clear dynamic color system cache (safe for theme loading)
-	local has_dynamic, dynamic = pcall(require, "chalk.utils.dynamic")
+	local has_dynamic, dynamic = pcall(require, "chalk.dynamic.dynamic")
 	if has_dynamic and dynamic.clear_cache then
 		-- Use safe cache clear that doesn't reload colorscheme
 		dynamic.clear_cache()

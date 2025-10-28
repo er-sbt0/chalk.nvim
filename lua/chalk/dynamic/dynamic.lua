@@ -2,7 +2,7 @@
 -- Consolidated from multiple sub-modules for simplicity
 
 local M = {}
-local colors = require("chalk.utils.colors")
+local colors = require("chalk.dynamic.colors")
 
 -- State management
 local _state = {
@@ -28,17 +28,6 @@ end
 local function safe_require(name)
 	local ok, result = pcall(require, name)
 	return ok and result or nil
-end
-
----Get current chalk colors
----@return table|nil Colors table
-local function get_chalk_colors()
-	local chalk_colors = safe_require("chalk.colors.default")
-	if not chalk_colors then
-		notify("Failed to load chalk colors", vim.log.levels.ERROR)
-		return nil
-	end
-	return chalk_colors
 end
 
 ---Reload chalk colorscheme with current config
@@ -391,63 +380,63 @@ end
 ---Setup all dynamic color commands
 function M.setup_commands()
 	local commands = {
-		ChalkDynamicIncreaseBrightness = {
+		ChalkIncreaseBrightness = {
 			callback = M.increase_brightness,
 			opts = { desc = "Increase brightness of TreeSitter group under cursor" },
 		},
-		ChalkDynamicDecreaseBrightness = {
+		ChalkDecreaseBrightness = {
 			callback = M.decrease_brightness,
 			opts = { desc = "Decrease brightness of TreeSitter group under cursor" },
 		},
-		ChalkDynamicNextColor = {
+		ChalkNextColor = {
 			callback = function()
 				M.change_color(1)
 			end,
 			opts = { desc = "Change to next color in color wheel" },
 		},
-		ChalkDynamicPrevColor = {
+		ChalkPrevColor = {
 			callback = function()
 				M.change_color(-1)
 			end,
 			opts = { desc = "Change to previous color in color wheel" },
 		},
-		ChalkDynamicWarmColor = {
+		ChalkWarmColor = {
 			callback = function()
 				M.change_color_by_family("warm", 1)
 			end,
 			opts = { desc = "Apply warm color family" },
 		},
-		ChalkDynamicCoolColor = {
+		ChalkCoolColor = {
 			callback = function()
 				M.change_color_by_family("cool", 1)
 			end,
 			opts = { desc = "Apply cool color family" },
 		},
-		ChalkDynamicSaturated = {
+		ChalkSaturated = {
 			callback = function()
 				M.change_color_by_family("saturated", 1)
 			end,
 			opts = { desc = "Make color more saturated" },
 		},
-		ChalkDynamicMuted = {
+		ChalkMuted = {
 			callback = function()
 				M.change_color_by_family("muted", 1)
 			end,
 			opts = { desc = "Make color more muted" },
 		},
-		ChalkDynamicReset = {
+		ChalkReset = {
 			callback = M.reset_colors,
 			opts = { desc = "Reset all colors to original" },
 		},
-		ChalkDynamicClear = {
+		ChalkClear = {
 			callback = M.clear_overrides,
 			opts = { desc = "Clear all color overrides" },
 		},
-		ChalkDynamicShow = {
+		ChalkShow = {
 			callback = M.show_overrides,
 			opts = { desc = "Show current color overrides" },
 		},
-		ChalkDynamicInspect = {
+		ChalkInspect = {
 			callback = M.inspect_group,
 			opts = { desc = "Inspect TreeSitter group under cursor" },
 		},

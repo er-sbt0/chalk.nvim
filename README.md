@@ -277,8 +277,8 @@ require("chalk").toggle()
 -- Preview variant without applying
 local preview_colors = require("chalk").preview("light")
 
--- Access utilities
-local utils = require("chalk").utils()
+-- Access dynamic features
+local dynamic = require("chalk").dynamic()
 ```
 
 ### Color Utilities

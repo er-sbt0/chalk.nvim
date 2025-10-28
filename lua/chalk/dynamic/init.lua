@@ -8,25 +8,13 @@ local M = {}
 ---Access to enhanced color utilities
 ---@return table Colors module with advanced color manipulation
 function M.colors()
-	return require("chalk.utils.colors")
+	return require("chalk.dynamic.colors")
 end
 
 ---Access to dynamic color adjustment system
 ---@return table Dynamic module for real-time color changes
 function M.dynamic()
-	return require("chalk.utils.dynamic")
-end
-
----Access to transparency management
----@return table Transparency module
-function M.transparency()
-	return require("chalk.utils.transparency")
-end
-
----Access to analysis and debugging tools
----@return table Analyzer module for debugging highlights
-function M.analyzer()
-	return require("chalk.utils.analyzer")
+	return require("chalk.dynamic.dynamic")
 end
 
 -- Convenient top-level functions
@@ -38,8 +26,6 @@ function M.setup_commands(opts)
 
 	-- Setup all commands
 	M.dynamic().setup_commands()
-	M.transparency().setup_commands()
-	M.analyzer().setup_commands()
 
 	vim.notify("[Utils] All chalk utility commands enabled", vim.log.levels.INFO)
 end
@@ -54,8 +40,6 @@ function M.quick_setup(opts)
 		terminal_colors = true,
 		-- Utils options
 		enable_dynamic = false,
-		enable_transparency_commands = false,
-		enable_analyzer = false,
 	}, opts or {})
 
 	-- Setup chalk colorscheme
@@ -66,25 +50,11 @@ function M.quick_setup(opts)
 		M.dynamic().setup_commands()
 	end
 
-	if opts.enable_transparency_commands then
-		M.transparency().setup_commands()
-	end
-
-	if opts.enable_analyzer then
-		M.analyzer().setup_commands()
-	end
-
 	-- Show completion message
 	vim.defer_fn(function()
 		local enabled_features = {}
 		if opts.enable_dynamic then
 			table.insert(enabled_features, "dynamic colors")
-		end
-		if opts.enable_transparency_commands then
-			table.insert(enabled_features, "transparency")
-		end
-		if opts.enable_analyzer then
-			table.insert(enabled_features, "analyzer")
 		end
 
 		local message = "🎨 Chalk colorscheme enabled!"
@@ -102,16 +72,65 @@ function M.enable_all(opts)
 	opts = opts or {}
 
 	M.setup_commands(opts)
-	vim.notify("[Utils] All chalk utilities enabled!", vim.log.levels.INFO)
+	vim.notify("[Dynamic] All chalk dynamic features enabled!", vim.log.levels.INFO)
+end
+
+---Setup keymaps for dynamic color commands
+---@param opts? table Keymap options
+function M.setup_keymaps(opts)
+	opts = vim.tbl_extend("force", {
+		prefix = "<leader>c", -- Default key prefix for dynamic color operations
+		silent = true,
+		noremap = true,
+	}, opts or {})
+
+	local keymap = vim.keymap.set
+
+	-- Define keymaps for dynamic color commands
+	local keymaps = {
+		-- Brightness adjustments
+		{ "b+", ":ChalkIncreaseBrightness<CR>", "Increase brightness" },
+		{ "b-", ":ChalkDecreaseBrightness<CR>", "Decrease brightness" },
+
+		-- Color wheel navigation
+		{ "cn", ":ChalkNextColor<CR>", "Next color" },
+		{ "cp", ":ChalkPrevColor<CR>", "Previous color" },
+
+		-- Color families
+		{ "cw", ":ChalkWarmColor<CR>", "Warm color" },
+		{ "cc", ":ChalkCoolColor<CR>", "Cool color" },
+		{ "cs", ":ChalkSaturated<CR>", "Saturated color" },
+		{ "cm", ":ChalkMuted<CR>", "Muted color" },
+
+		-- Utility commands
+		{ "cr", ":ChalkReset<CR>", "Reset colors" },
+		{ "cl", ":ChalkClear<CR>", "Clear overrides" },
+		{ "ci", ":ChalkInspect<CR>", "Inspect group" },
+		{ "cv", ":ChalkShow<CR>", "View overrides" },
+	}
+
+	-- Create keymaps with prefix
+	for _, map in ipairs(keymaps) do
+		local key, cmd, desc = map[1], map[2], map[3]
+		keymap("n", opts.prefix .. key, cmd, {
+			desc = "Chalk: " .. desc,
+			silent = opts.silent,
+			noremap = opts.noremap,
+		})
+	end
+
+	vim.notify(string.format("[Dynamic] Keymaps enabled with prefix '%s'", opts.prefix), vim.log.levels.INFO)
 end
 
 -- Export commonly used functions for convenience
 M.adjust_brightness = function(...)
 	return M.colors().adjust_brightness(...)
 end
+
 M.shift_hue = function(...)
 	return M.colors().shift_hue(...)
 end
+
 M.apply_color_family = function(...)
 	return M.colors().apply_color_family(...)
 end
