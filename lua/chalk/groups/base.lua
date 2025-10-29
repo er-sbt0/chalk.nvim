@@ -216,7 +216,7 @@ function M.setup(colors, opts)
 
 		-- Special
 		Special = { fg = c.blue },
-		SpecialChar = { fg = c.cream_5, bold = true },
+		SpecialChar = { fg = c.cream, bold = true },
 		Tag = { fg = c.red },
 		Delimiter = { fg = c.light_gray },
 		SpecialComment = { fg = c.comment, bold = true },

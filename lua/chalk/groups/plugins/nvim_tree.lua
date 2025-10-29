@@ -28,7 +28,7 @@ local function get_base_highlights(colors)
 
 		-- === FOLDER AND FILE ICONS ===
 		-- Main folder icon - using azure family for sophisticated blue folder appearance
-		NvimTreeFolderIcon = { fg = c.azure_2 }, -- Base steel blue for folder icons
+		NvimTreeFolderIcon = { fg = c.steel_blue }, -- Base steel blue for folder icons
 		NvimTreeFileIcon = { link = "NvimTreeNormal" },
 		NvimTreeSymlinkIcon = { link = "NvimTreeNormal" },
 		NvimTreeOpenedFolderIcon = { link = "NvimTreeFolderIcon" },
@@ -55,7 +55,7 @@ local function get_base_highlights(colors)
 
 		-- === WINDOW PICKER ===
 		-- Sophisticated window picker with enhanced contrast
-		NvimTreeWindowPicker = { fg = c.fg_light, bg = c.azure_3, bold = true },
+		NvimTreeWindowPicker = { fg = c.fg_light, bg = c.ocean_blue, bold = true },
 
 		-- === DIAGNOSTIC HIGHLIGHTS ===
 		-- Diagnostic folder highlights - link to corresponding file highlights

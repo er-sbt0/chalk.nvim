@@ -189,7 +189,9 @@ function M.setup(opts)
 	end
 
 	if opts.custom_highlights and not opts.on_highlights then
-		Util.warn("'custom_highlights' is deprecated since v1.0.0, use 'on_highlights' instead. Will be removed in v2.0.0")
+		Util.warn(
+			"'custom_highlights' is deprecated since v1.0.0, use 'on_highlights' instead. Will be removed in v2.0.0"
+		)
 		opts.on_highlights = function(hl, colors)
 			if type(opts.custom_highlights) == "function" then
 				local custom = opts.custom_highlights(colors)

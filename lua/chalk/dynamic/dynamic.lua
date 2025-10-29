@@ -177,9 +177,9 @@ function M.apply_overrides()
 	for group_name, color in pairs(overrides) do
 		-- Convert hex color to number (remove # and convert to number)
 		local color_num = tonumber(color:gsub("#", ""), 16)
-		
+
 		local current_hl = vim.api.nvim_get_hl(0, { name = group_name })
-		
+
 		-- If the group is a link, we need to break the link and copy the linked attributes
 		if current_hl.link then
 			-- Get the linked group's attributes
@@ -189,7 +189,7 @@ function M.apply_overrides()
 			-- Remove the link
 			current_hl.link = nil
 		end
-		
+
 		if current_hl then
 			-- Preserve other attributes, just change the foreground color
 			current_hl.fg = color_num
@@ -380,14 +380,14 @@ function M.show_overrides()
 		"Active Color Overrides:",
 		string.rep("-", 50),
 	}
-	
+
 	for group, color in pairs(overrides) do
 		table.insert(lines, string.format("%-25s %s", group, color))
 	end
-	
+
 	table.insert(lines, string.rep("-", 50))
 	table.insert(lines, string.format("Total: %d overrides", vim.tbl_count(overrides)))
-	
+
 	vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
 end
 

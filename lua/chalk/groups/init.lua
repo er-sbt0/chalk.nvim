@@ -8,7 +8,7 @@ M.available_groups = {
 	-- Base groups (always available)
 	base = true,
 	treesitter = true,
-	
+
 	-- Plugin groups (with dedicated files)
 	telescope = true,
 	nvim_cmp = true,
@@ -208,7 +208,7 @@ function M.has_group(name)
 	if M.available_groups[name] ~= nil then
 		return M.available_groups[name]
 	end
-	
+
 	-- Fallback: try to load (for dynamic/future groups)
 	return M.get_group(name) ~= nil
 end

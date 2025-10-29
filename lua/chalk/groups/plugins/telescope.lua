@@ -16,7 +16,7 @@ local function get_base_highlights(colors)
 		-- Telescope prompts
 		TelescopePromptNormal = { bg = c.bg_4 },
 		TelescopePromptBorder = { bg = c.bg_4, fg = c.bg_4 },
-		TelescopePromptTitle = { bg = c.peach_4, fg = c.fg_darker, bold = true },
+		TelescopePromptTitle = { bg = c.peach, fg = c.fg_darker, bold = true },
 		TelescopePromptPrefix = { bg = c.bg_4, fg = c.red },
 		TelescopePromptCounter = { fg = c.comment },
 
